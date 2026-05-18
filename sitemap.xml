@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jurocsolutions.com/</loc>
+    <loc>http://juroc.tech/</loc>
     <lastmod>2025-04-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://jurocsolutions.com/privacy-policy.html</loc>
+      <loc>https://juroc.tech/privacy-policy.html</loc>
     <lastmod>2025-04-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://jurocsolutions.com/terms.html</loc>
+    <loc>https://juroc.tech/terms.html</loc>
     <lastmod>2025-04-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://jurocsolutions.com/legal.html</loc>
+    <loc>https://juroc.tech/legal.html</loc>
     <lastmod>2025-04-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://jurocsolutions.com/cookies.html</loc>
+    <loc>https://juroc.tech/cookies.html</loc>
     <lastmod>2025-04-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
