@@ -27,6 +27,9 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 465,
   secure: String(process.env.SMTP_SECURE).toLowerCase() !== 'false',
+  /* Require the STARTTLS upgrade on port 587 rather than leaving it
+     opportunistic, so credentials can never go out in cleartext. */
+  requireTLS: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS

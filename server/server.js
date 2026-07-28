@@ -56,6 +56,11 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 465,
   secure: String(process.env.SMTP_SECURE).toLowerCase() !== 'false',
+  /* With secure=false (port 587) nodemailer upgrades via STARTTLS only if the
+     server advertises it — otherwise it would happily send AUTH in cleartext.
+     Require the upgrade so a stripped STARTTLS fails loudly instead of leaking
+     the password. No effect on port 465, which is already implicit TLS. */
+  requireTLS: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
