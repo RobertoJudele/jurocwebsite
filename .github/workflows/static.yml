@@ -1,12 +1,11 @@
 # Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
+# The site is now served from the VPS (see deploy/README.md). The automatic
+# push trigger is disabled so a second, stale copy does not stay live on
+# Pages. Re-add the "push" block below to switch back to Pages hosting.
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Manual runs only, from the Actions tab.
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

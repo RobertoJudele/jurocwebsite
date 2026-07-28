@@ -1,0 +1,8 @@
+# Never bake credentials or a host-built node_modules into the image.
+# node_modules matters especially: nodemailer is pure JS, but copying a
+# Windows/macOS-built tree over the linux one from `npm ci` is a classic
+# way to get native-binary errors at runtime.
+node_modules
+.env
+.env.example
+npm-debug.log

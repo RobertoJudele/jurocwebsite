@@ -413,6 +413,11 @@
             <label for="message">Message <span class="required">*</span></label>
             <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tell us about your goals, the sport you're interested in, or how you'd like to join as a coach…" required></textarea>
           </div>
+          <!-- Honeypot: hidden from people, filled in by bots. Not a real field. -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="website">Leave this field empty</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
           <div class="form-check">
             <input type="checkbox" id="consent" name="consent" required>
             <label for="consent">I agree to the <a href="privacy-policy.html">Privacy Policy</a> and consent to Juroc Solutions SRL processing my personal data to respond to my enquiry.</label>
