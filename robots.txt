@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://juroc.tech/sitemap.xml
+Sitemap: https://juroc.tech/sitemap.xml
