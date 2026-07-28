@@ -95,34 +95,70 @@ docker compose up -d juroc-site-api
 docker compose logs juroc-site-api      # expect "SMTP connection verified"
 ```
 
-## 6. Add the nginx config (HTTP only for now)
+## 6. Install the BOOTSTRAP nginx config
+
+`juroc.tech` is live on GitHub Pages over HTTPS right now. This is a cutover,
+not a fresh setup, so the order below is designed to avoid a window where the
+domain resolves here but has no certificate.
+
+Use the bootstrap config, which serves the site over plain HTTP and answers
+ACME challenges. Do **not** install `juroc.tech.conf` yet — its `:80` block
+redirects to HTTPS, and with no certificate for `juroc.tech` yet, browsers
+would fall through to the `api.juroc.tech` 443 block and show a certificate
+name mismatch. That is a harder failure than the site it replaces.
 
 ```sh
 cd ~/Trainee/server
-cp /home/robi/jurocwebsite/deploy/nginx/juroc.tech.conf ./nginx/conf.d/
+cp /home/robi/jurocwebsite/deploy/nginx/juroc.tech.bootstrap.conf ./nginx/conf.d/
 docker compose exec nginx nginx -t
 docker compose exec nginx nginx -s reload
 ```
 
-Config files load alphabetically, so `app.conf` is read before
-`juroc.tech.conf`. That does not matter here: nginx matches on `server_name`
-first and only falls back to the default server when no name matches. An
-explicit `juroc.tech` block wins for `juroc.tech`, and `api.juroc.tech` keeps
-its own block untouched.
-
-Leave the 443 block commented out. The certificate does not exist yet, and
-nginx **refuses to start with a missing `ssl_certificate` file** — on a restart
-that would take the trainee app down with it.
+Config files load alphabetically, so `app.conf` is read first. That does not
+matter: nginx matches on `server_name` before falling back to a default server,
+so an explicit `juroc.tech` block wins and `api.juroc.tech` is untouched.
 
 `nginx -t` before every reload, always.
 
-## 7. Point DNS at the VPS, then issue the certificate
+## 6b. Test the whole thing BEFORE touching DNS
 
-Set the `A` records for `juroc.tech` and `www.juroc.tech` to the VPS IP and wait
-for propagation. The webroot challenge only works once the domain actually
-resolves here.
+This is the step that de-risks the cutover. Point curl at the VPS by IP while
+sending the real `Host` header — nginx routes on the header, not on DNS, so you
+can exercise the production path while the public site is still on Pages:
 
 ```sh
+VPS_IP=$(hostname -I | awk '{print $1}')
+
+curl -s -o /dev/null -w "home: %{http_code}\n"    -H "Host: juroc.tech" http://$VPS_IP/
+curl -s -o /dev/null -w "privacy: %{http_code}\n" -H "Host: juroc.tech" http://$VPS_IP/privacy-policy
+curl -s -w "\napi: %{http_code}\n"                -H "Host: juroc.tech" http://$VPS_IP/api/health
+curl -s -o /dev/null -w "secrets blocked: %{http_code}\n" -H "Host: juroc.tech" http://$VPS_IP/server/.env
+
+# and confirm the trainee app is unaffected
+curl -s -o /dev/null -w "api.juroc.tech still up: %{http_code}\n" https://api.juroc.tech/
+```
+
+Expect `200`, `200`, `{"ok":true}` / `200`, `404`, and the trainee app
+unchanged. Fix anything wrong here — it costs nothing while DNS still points
+at Pages.
+
+## 7. Cut DNS over, then issue the certificate
+
+Lower the TTL on the `juroc.tech` and `www` records to 300s **a few hours
+before** the cutover, so the switch propagates in minutes rather than hours.
+The records currently point at GitHub Pages; change them to the VPS IP.
+
+Watch for the switch:
+
+```sh
+watch -n 10 'dig +short juroc.tech; curl -sI http://juroc.tech | head -1'
+```
+
+Once it resolves here (the site is up over HTTP at this point, just not yet
+HTTPS), issue the certificate immediately:
+
+```sh
+cd ~/Trainee/server
 docker compose run --rm --entrypoint certbot certbot \
   certonly --webroot -w /var/www/certbot \
   -d juroc.tech -d www.juroc.tech \
@@ -130,26 +166,57 @@ docker compose run --rm --entrypoint certbot certbot \
 ```
 
 The `--entrypoint` override is needed because the certbot service's own
-entrypoint is the renewal loop. Add `--dry-run` first if you want a rehearsal —
-Let's Encrypt rate-limits failed issuance attempts fairly aggressively.
+entrypoint is the renewal loop. Add `--dry-run` first for a rehearsal — Let's
+Encrypt rate-limits failed issuance attempts aggressively.
 
-The existing renewal loop picks this cert up automatically afterwards; no change
-needed there.
+The existing renewal loop picks the new certificate up automatically; the
+nginx container already reloads every 6h to collect renewals. No change needed.
 
-## 8. Enable HTTPS
+## 8. Swap the bootstrap for the real config (enables HTTPS)
 
-Uncomment the 443 block in `./nginx/conf.d/juroc.tech.conf`, then:
+Now that the certificate exists, replace the temporary HTTP-only config with
+the real one and uncomment its 443 block:
 
 ```sh
+cd ~/Trainee/server
+rm ./nginx/conf.d/juroc.tech.bootstrap.conf
+cp /home/robi/jurocwebsite/deploy/nginx/juroc.tech.conf ./nginx/conf.d/
+# uncomment the 443 block in that file
+nano ./nginx/conf.d/juroc.tech.conf
+
 docker compose exec nginx nginx -t
 docker compose exec nginx nginx -s reload
 ```
 
+Removing the bootstrap file matters — leaving both would give two `:80` blocks
+with `server_name juroc.tech`, and nginx silently keeps only the first.
+
+Verify HTTPS and the redirect:
+
+```sh
+curl -sI https://juroc.tech | head -1          # expect 200, and no GitHub headers
+curl -sI http://juroc.tech  | head -2          # expect 301 -> https
+```
+
+Note this config sends HSTS with a one-year max-age. That is a commitment:
+once a browser sees it, that browser will refuse plain HTTP for juroc.tech for
+a year. Only reload this after HTTPS is confirmed working.
+
 ## 9. Turn off the GitHub Pages deploy
 
-`.github/workflows/static.yml` is already set to `workflow_dispatch` only, so
-pushing to `main` no longer publishes. Once the VPS serves traffic, also disable
-Pages in the repo's **Settings → Pages** so no stale copy stays reachable.
+Do this **only after** step 8 is verified. Disabling the workflow does not take
+the Pages site down — it freezes it at its last build. If you merge to `main`
+before the VPS serves traffic, `main` has the fix while the live site keeps
+serving the old form indefinitely.
+
+Order:
+
+1. Confirm `https://juroc.tech` is served by the VPS (no `server: GitHub.com`).
+2. Merge `contact-form-email` to `main`. The workflow is already set to
+   `workflow_dispatch` only, so pushing to `main` no longer publishes.
+3. Remove the custom domain in the repo's **Settings → Pages**, then disable
+   Pages. Leaving the custom domain set there while DNS points elsewhere is
+   harmless but leaves a dangling claim on the hostname.
 
 ## 10. Test end to end
 
