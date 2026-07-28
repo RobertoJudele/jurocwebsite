@@ -102,14 +102,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!valid) return;
 
-      /* Simulate form submission */
+      /* Submit to the mail service */
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending…';
-      await new Promise(r => setTimeout(r, 1200));
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-      form.reset();
-      if (successMsg) successMsg.style.display = 'block';
+
+      try {
+        const payload = {
+          firstName: form.firstName.value.trim(),
+          lastName: form.lastName.value.trim(),
+          email: form.email.value.trim(),
+          company: form.company.value.trim(),
+          subject: form.subject.value.trim(),
+          message: form.message.value.trim(),
+          consent: consentCheck ? consentCheck.checked : false,
+          website: form.website ? form.website.value : ''
+        };
+
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Something went wrong sending your message.');
+        }
+
+        /* Only clear what the visitor typed once it is genuinely delivered. */
+        form.reset();
+        if (successMsg) successMsg.style.display = 'block';
+      } catch (err) {
+        if (errorMsg) {
+          errorMsg.textContent = `${err.message} Please email us directly at robertojudele@juroc.tech.`;
+          errorMsg.style.display = 'block';
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
     });
 
     /* Remove error state on input */

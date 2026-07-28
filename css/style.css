@@ -679,9 +679,23 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 .form-check input[type="checkbox"] { margin-top: 3px; accent-color: var(--color-primary); cursor: pointer; }
 .form-check label { font-size: 0.85rem; color: var(--color-text-muted); cursor: pointer; line-height: 1.5; }
 .form-check label a { color: var(--color-primary); }
+/* Hidden until the script reveals one by setting an inline display. The
+   modifiers must not set display themselves, or both boxes show on page load. */
 .form-message { display: none; padding: 12px 16px; border-radius: var(--radius); font-size: 0.9rem; margin-top: 16px; }
-.form-message.success { display: block; background: rgba(0,201,167,.1); color: #007c67; border: 1px solid rgba(0,201,167,.3); }
-.form-message.error-msg { display: block; background: rgba(229,62,62,.1); color: #c53030; border: 1px solid rgba(229,62,62,.3); }
+.form-message.success { background: rgba(0,201,167,.1); color: #007c67; border: 1px solid rgba(0,201,167,.3); }
+.form-message.error-msg { background: rgba(229,62,62,.1); color: #c53030; border: 1px solid rgba(229,62,62,.3); }
+
+/* Honeypot. Moved off-screen rather than display:none, because a fair number
+   of bots skip fields that are hidden outright. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* =========================================
    FOOTER
