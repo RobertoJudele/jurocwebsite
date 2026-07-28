@@ -67,13 +67,53 @@ nano /home/robi/jurocwebsite/server/.env
 chmod 600 /home/robi/jurocwebsite/server/.env
 ```
 
-Confirmed working values: `smtp.gmail.com`, port `465`, `SMTP_SECURE=true`,
-user `robertojudele@juroc.tech`, with the Google app password. The mailbox is on
-Google Workspace, so SPF and DKIM are already aligned for the domain.
+Confirmed working values: `smtp.gmail.com`, port `587`, `SMTP_SECURE=false`
+(STARTTLS — 465 is blocked outbound on this VPS, see step 2), user
+`robertojudele@juroc.tech`, with the Google app password.
 
 Fill in `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` for
 whoever hosts `robertojudele@juroc.tech`. `.env.example` lists the correct host
 and port for Google Workspace, Zoho, Migadu and Microsoft 365.
+
+## 4b. Fix SPF and DKIM before real visitors use the form
+
+Sending works without this; **deliverability to strangers does not.**
+
+Checked 2026-07-28, juroc.tech had:
+
+```
+MX:   SMTP.GOOGLE.COM                              (mail is on Google Workspace)
+SPF:  v=spf1 include:_spf.mail.hostinger.com ~all  (authorises Hostinger only)
+DKIM: google._domainkey                            NOT FOUND
+```
+
+Mail is sent through Google but SPF authorises Hostinger, and there is no
+Google DKIM record — leftovers from before the Google Workspace migration.
+
+This is invisible in testing. Messages to `@juroc.tech` and `@gmail.com`
+addresses are Google-to-Google and skip the checks an external provider
+applies. But the auto-reply goes to whoever fills in the form: a visitor on
+Outlook or Yahoo receives a message that softfails SPF with no aligned DKIM,
+which is a strong spam signal on the one email meant to reassure them.
+
+Fix in the Hostinger DNS zone:
+
+1. Edit the SPF TXT record on `@` to include Google:
+   `v=spf1 include:_spf.google.com include:_spf.mail.hostinger.com ~all`
+   (drop the Hostinger include if nothing sends through them any more)
+2. Google Admin → Apps → Google Workspace → Gmail → Authenticate email →
+   generate the key, add the `google._domainkey` TXT record, then click
+   Start authentication.
+
+Verify afterwards:
+
+```sh
+dig +short TXT juroc.tech | grep spf
+dig +short TXT google._domainkey.juroc.tech
+```
+
+Then send a test to an address outside Google — Outlook or Yahoo — and check
+it reaches the inbox. A `@gmail.com` test cannot detect this problem.
 
 If the mailbox has 2FA, `SMTP_PASS` must be an **app-specific password**. The
 normal account password is rejected with `EAUTH`.
