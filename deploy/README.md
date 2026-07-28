@@ -44,8 +44,8 @@ own home rather than nesting it in the Trainee tree:
 git clone https://github.com/<your-org>/jurocwebsite.git /home/robi/jurocwebsite
 ```
 
-`docker-compose.juroc-site.yml` uses that absolute path throughout. If you put
-it elsewhere, update the three paths in that file.
+`docker-compose.merged.yml` uses that absolute path throughout. If you put it
+elsewhere, update the three paths in that file.
 
 ## 4. Configure SMTP credentials
 
@@ -70,9 +70,27 @@ This is a different `.env` from the trainee stack's — keep them separate.
 
 ## 5. Merge the services and verify SMTP
 
-Paste the `juroc-site-api` service from `docker-compose.juroc-site.yml` into the
-main `docker-compose.yml`, and add the two marked lines to the existing `nginx`
-service (the `/var/www/juroc.tech` mount and the `depends_on` entry).
+`docker-compose.merged.yml` is the trainee stack with the site's services
+already merged in, so it can be dropped straight in:
+
+```sh
+cd ~/Trainee/server
+cp docker-compose.yml docker-compose.yml.bak      # keep a way back
+cp /home/robi/jurocwebsite/deploy/docker-compose.merged.yml docker-compose.yml
+docker compose config --quiet && echo "parses OK"
+```
+
+**Diff it against your backup before going further.** The merged file mirrors
+the trainee stack as it stood on 2026-07-28; if that has changed since, apply
+the three additions by hand instead of overwriting:
+
+```sh
+diff docker-compose.yml.bak docker-compose.yml
+```
+
+The only differences should be the `juroc-site-api` service, the
+`/var/www/juroc.tech` mount on nginx, and `juroc-site-api` in nginx's
+`depends_on` — each marked `ADDED FOR JUROC SITE`.
 
 Then test the relay in isolation, before any of it is public:
 
