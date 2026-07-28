@@ -59,7 +59,16 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  /* Nodemailer defaults to a 2-minute connection timeout. If the host cannot
+     reach the relay at all — a provider blocking outbound SMTP is the usual
+     cause — the request would hang far past nginx's 30s proxy_read_timeout,
+     handing the visitor a 504 with no useful error and tying up a connection
+     the whole time. Fail fast instead, so the form shows its own error and
+     tells them to email directly. */
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 20000
 });
 
 const MAIL_FROM = process.env.MAIL_FROM || process.env.SMTP_USER;
