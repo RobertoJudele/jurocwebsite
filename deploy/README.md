@@ -24,15 +24,27 @@ The trainee API owns `api.juroc.tech`; this site takes `juroc.tech` and
 Note that `api.juroc.tech` already resolves to this VPS, but the apex
 `juroc.tech` likely still points at GitHub Pages — see step 7.
 
-## 2. Check the VPS can send mail at all
+## 2. Check which SMTP port the VPS can actually reach
 
 ```sh
-nc -zv smtp.your-provider.com 465
+for p in 465 587; do
+  timeout 8 bash -c "cat < /dev/null > /dev/tcp/smtp.gmail.com/$p" \
+    && echo "$p OPEN" || echo "$p BLOCKED"
+done
 ```
 
-Many VPS providers block outbound SMTP by default, sometimes including 465 and
-587. If this hangs, open a support ticket — no amount of config will fix it, and
-it is better to find out now than after everything else is wired up.
+**Result on this VPS (Hetzner nbg1, verified 2026-07-28): 465 BLOCKED, 587
+OPEN.** Hence `SMTP_PORT=587` / `SMTP_SECURE=false` (STARTTLS) rather than 465
+implicit TLS. Both are encrypted; the service sets `requireTLS` so a missing
+STARTTLS upgrade fails rather than sending credentials in cleartext.
+
+Do this before anything else. A blocked port and a bad password look identical
+from the application — both just hang — and chasing the wrong one wastes real
+time. If both ports are blocked, that is a provider support ticket; no config
+will fix it.
+
+Note: do not test `smtp.gmail.com:443` as a control. It does not listen on 443,
+so a failure there means nothing.
 
 ## 3. Clone the site
 
