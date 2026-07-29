@@ -8,13 +8,19 @@
   </url>
   <url>
     <loc>https://juroc.tech/privacy-policy.html</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://juroc.tech/terms.html</loc>
     <lastmod>2026-06-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://juroc.tech/salvio-terms.html</loc>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
