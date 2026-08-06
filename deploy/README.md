@@ -245,14 +245,13 @@ nginx container already reloads every 6h to collect renewals. No change needed.
 ## 8. Swap the bootstrap for the real config (enables HTTPS)
 
 Now that the certificate exists, replace the temporary HTTP-only config with
-the real one and uncomment its 443 block:
+the real one. It ships with the 443 block enabled, so it only needs copying —
+but read the header note first if the certificate is not in place yet.
 
 ```sh
 cd ~/Trainee/server
 rm ./nginx/conf.d/juroc.tech.bootstrap.conf
 cp /home/robi/jurocwebsite/deploy/nginx/juroc.tech.conf ./nginx/conf.d/
-# uncomment the 443 block in that file
-nano ./nginx/conf.d/juroc.tech.conf
 
 docker compose exec nginx nginx -t
 docker compose exec nginx nginx -s reload
