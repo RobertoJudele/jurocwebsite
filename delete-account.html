@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete your Salvio account — Juroc Tech Solutions SRL</title>
+  <meta name="description" content="How to request deletion of your Salvio account and data. Salvio is operated by Juroc Tech Solutions SRL, Romania. English and Romanian.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://juroc.tech/delete-account">
+  <meta name="color-scheme" content="light">
+
+  <!--
+    Google Play requires this URL to work for anyone, at any time. So unlike the
+    other pages on this site it links nothing: no css/style.css, no js/main.js and
+    no Google Fonts. The header, nav and footer styles below are copied verbatim
+    from css/style.css — if that file's header/footer/inner-page rules change,
+    mirror the change here.
+    Consequence of dropping the Google Fonts link: Inter is used only if the
+    visitor already has it installed, otherwise the stack falls back to the
+    system UI font. Everything else renders identically to the other pages.
+  -->
+
+  <!-- assets/favicon.svg, inlined to keep this page a single file. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%231a73e8'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='28' font-weight='900' fill='white'%3EJ%3C/text%3E%3C/svg%3E">
+
+  <script>
+    // Set before first paint so the language toggle does not flash both sections.
+    // Without JS the `js` class never lands and *both* languages stay visible,
+    // which keeps the page fully usable.
+    (function () {
+      var el = document.documentElement;
+      el.className = 'js';
+      el.setAttribute('data-lang', location.hash === '#ro' ? 'ro' : 'en');
+    })();
+  </script>
+
+  <style>
+    /* ==========================================================
+       Copied from css/style.css — keep in sync
+       ========================================================== */
+    :root {
+      --color-primary: #1a73e8;
+      --color-primary-dark: #1558b0;
+      --color-secondary: #0d1117;
+      --color-bg: #ffffff;
+      --color-bg-alt: #f8fafc;
+      --color-bg-dark: #0d1117;
+      --color-text: #1e2a38;
+      --color-text-muted: #5f7080;
+      --color-border: #e2e8f0;
+      --color-white: #ffffff;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --radius: 8px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow: 0 4px 16px rgba(0,0,0,.10);
+      --transition: 0.25s ease;
+      --container-max: 1200px;
+      --header-height: 72px;
+
+      /* Salvio brand accent, used for this page's content blocks. */
+      --salvio: #10B981;
+      --salvio-ink: #047857;   /* darkened for text/buttons: AA on white */
+      --salvio-wash: #ECFDF5;
+      --warn-bg: #FFFBEB;
+      --warn-line: #B45309;
+      --warn-ink: #7C2D12;
+    }
+
+    /* --- Reset --- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--color-primary); text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--color-primary-dark); }
+    ul { list-style: none; }
+
+    .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 24px; }
+
+    /* --- Buttons --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 2px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-white);
+      border-color: var(--color-primary);
+    }
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+      color: var(--color-white);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    /* --- Header / navigation --- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      z-index: 1000;
+      transition: box-shadow var(--transition);
+    }
+    .site-header.scrolled { box-shadow: var(--shadow); }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--color-secondary);
+      text-decoration: none;
+    }
+    .logo:hover { color: var(--color-secondary); }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .logo-name { font-size: 1.1rem; font-weight: 800; }
+    .logo-sub { font-size: 0.65rem; font-weight: 500; color: var(--color-text-muted); letter-spacing: .04em; text-transform: uppercase; }
+
+    .nav-menu { display: flex; align-items: center; gap: 32px; }
+    .nav-menu a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text);
+      transition: color var(--transition);
+      position: relative;
+    }
+    .nav-menu a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--color-primary);
+      transform: scaleX(0);
+      transition: transform var(--transition);
+    }
+    .nav-menu a:hover { color: var(--color-primary); }
+    .nav-menu a:hover::after { transform: scaleX(1); }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--color-text);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* --- Footer --- */
+    .site-footer { background: var(--color-bg-dark); color: rgba(255,255,255,.7); padding: 64px 0 0; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+    .footer-logo .logo-icon { background: var(--color-primary); }
+    .footer-logo .logo-name { color: white; }
+    .footer-logo .logo-sub { color: rgba(255,255,255,.5); }
+    .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 300px; }
+    .footer-col h4 { color: white; font-size: 0.9rem; font-weight: 700; margin-bottom: 16px; letter-spacing: .02em; }
+    .footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+    .footer-col ul li a { color: rgba(255,255,255,.6); font-size: 0.87rem; transition: color var(--transition); }
+    .footer-col ul li a:hover { color: white; }
+    .footer-bottom {
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-bottom p { font-size: 0.82rem; }
+    .footer-legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-legal-links a { color: rgba(255,255,255,.5); font-size: 0.82rem; transition: color var(--transition); }
+    .footer-legal-links a:hover { color: white; }
+    .footer-legal-info {
+      padding: 20px 0 24px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,.35);
+    }
+
+    /* --- Inner page layout --- */
+    .inner-hero {
+      padding: calc(var(--header-height) + 60px) 0 60px;
+      background: var(--color-bg-alt);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .inner-hero h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-secondary); margin-bottom: 8px; }
+    .inner-hero .breadcrumb { font-size: 0.88rem; color: var(--color-text-muted); }
+    .inner-hero .breadcrumb a { color: var(--color-primary); }
+    .inner-hero .breadcrumb a:hover { text-decoration: underline; }
+    .inner-hero .last-updated { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 8px; }
+
+    .legal-content { padding: 64px 0; }
+    .legal-inner {
+      /* Narrower than the 860px used on the other legal pages: this page is
+         read on a phone by someone mid-task, so the column is kept short. */
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .legal-inner h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      margin-top: 40px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .legal-inner h2:first-child { margin-top: 0; }
+    .legal-inner h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--color-secondary);
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .legal-inner p {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .legal-inner ul, .legal-inner ol { margin: 12px 0 16px 20px; }
+    .legal-inner ul li, .legal-inner ol li {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 6px;
+      list-style: disc;
+    }
+    .legal-inner ol li { list-style: decimal; }
+    .legal-inner a { color: var(--salvio-ink); font-weight: 600; }
+    .legal-inner a:hover { color: var(--salvio-ink); text-decoration: underline; }
+
+    /* ==========================================================
+       Page-specific: account deletion blocks
+       ========================================================== */
+
+    /* Language toggle. Hidden without JS, where both languages are shown. */
+    .langbar { display: none; gap: 8px; margin-bottom: 20px; }
+    html.js .langbar { display: flex; }
+    .langbtn {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 100px;
+      background: var(--color-white);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .langbtn:hover { border-color: var(--salvio-ink); color: var(--salvio-ink); }
+    .langbtn[aria-pressed="true"] {
+      background: var(--salvio-ink);
+      border-color: var(--salvio-ink);
+      color: var(--color-white);
+    }
+
+    html.js[data-lang="en"] .lang[lang="ro"] { display: none; }
+    html.js[data-lang="ro"] .lang[lang="en"] { display: none; }
+    html.js .lang-divider { display: none; }
+    /* Separator, shown only in the no-JS case where both languages stack. */
+    .lang-divider { border: 0; border-top: 2px dashed var(--color-border); }
+
+    .step-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--salvio);
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      padding: 24px 28px;
+      margin: 20px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-card h3 { margin-top: 0; }
+    .step-card > :last-child { margin-bottom: 0; }
+    .step-card ol li::marker { color: var(--salvio-ink); font-weight: 700; }
+
+    .step-label {
+      display: inline-block;
+      background: var(--salvio-wash);
+      color: var(--salvio-ink);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+
+    .warning-box {
+      background: var(--warn-bg);
+      border: 1px solid #FDE68A;
+      border-left: 4px solid var(--warn-line);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .warning-box h3 { margin-top: 0; color: var(--warn-ink); }
+    .warning-box > :last-child { margin-bottom: 0; }
+
+    .final-box {
+      background: var(--salvio-wash);
+      border: 2px solid var(--salvio-ink);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin: 32px 0;
+    }
+    .final-box p { color: var(--color-text); font-weight: 600; margin-bottom: 0; }
+
+    /* Long email/URL strings must never push the layout sideways. */
+    .breakable { word-break: break-word; overflow-wrap: anywhere; }
+
+    .page-updated {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Keyboard focus stays visible everywhere. */
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid var(--salvio-ink);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* --- Responsive (mirrors css/style.css) --- */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      :root { --header-height: 64px; }
+      .nav-menu { display: none; flex-direction: column; align-items: flex-start; position: fixed; top: var(--header-height); left: 0; right: 0; background: white; border-bottom: 1px solid var(--color-border); padding: 20px 24px; gap: 4px; box-shadow: var(--shadow); }
+      .nav-menu.open { display: flex; }
+      .nav-menu a { padding: 10px 0; width: 100%; border-bottom: 1px solid var(--color-border); font-size: 1rem; }
+      .nav-menu a:last-child { border-bottom: none; }
+      .nav-menu a::after { display: none; }
+      .nav-actions .btn { display: none; }
+      .hamburger { display: flex; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .inner-hero { padding: calc(var(--header-height) + 40px) 0 40px; }
+      .legal-content { padding: 40px 0; }
+      .step-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Juroc Tech Solutions SRL — Home">
+        <div class="logo-icon" aria-hidden="true">J</div>
+        <div class="logo-text">
+          <span class="logo-name">Juroc Solutions</span>
+          <span class="logo-sub">SRL</span>
+        </div>
+      </a>
+      <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="index.html#contact" class="btn btn-primary">Get Started</a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================ ENGLISH ============================ -->
+    <section class="lang" lang="en" id="en">
+
+      <div class="inner-hero">
+        <div class="container">
+          <div class="langbar" role="group" aria-label="Language">
+            <button type="button" class="langbtn" data-set-lang="en" aria-pressed="true">English</button>
+            <button type="button" class="langbtn" data-set-lang="ro" aria-pressed="false">Română</button>
+          </div>
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a> &rsaquo; Delete Account
+          </nav>
+          <h1>Delete your Salvio account</h1>
+          <p class="last-updated">Last updated: 6 August 2026</p>
+        </div>
+      </div>
+
+      <div class="legal-content">
+        <div class="container">
+          <div class="legal-inner">
+
+            <p>
+              <strong>Salvio</strong> is a fitness trainer marketplace for iOS and Android,
+              developed and operated by <strong>Juroc Tech Solutions SRL</strong>, Romania.
+              This page explains how to request deletion of your Salvio account, and what
+              happens to your data when you do.
+            </p>
+
+            <h2>How to delete your account</h2>
+            <p>There are two ways to delete your Salvio account. You do not need to install the app or sign in to this page to make a request.</p>
+
+            <div class="step-card">
+              <span class="step-label">Option 1 — In the app</span>
+              <h3>Delete your account yourself (immediate)</h3>
+              <ol>
+                <li>Open the Salvio app and go to your <strong>profile</strong>.</li>
+                <li>Tap the <strong>menu (three dots)</strong> in the top right corner.</li>
+                <li>Choose <strong>Delete Profile</strong>.</li>
+                <li><strong>Confirm</strong> the deletion.</li>
+              </ol>
+              <p>Your account and data are deleted <strong>immediately and permanently</strong>.</p>
+            </div>
+
+            <div class="step-card">
+              <span class="step-label">Option 2 — By email</span>
+              <h3>Ask us to delete your account</h3>
+              <ol>
+                <li>Write to <a class="breakable" href="mailto:robertojudele@juroc.tech?subject=Account%20deletion%20request">robertojudele@juroc.tech</a>.</li>
+                <li>Send the email <strong>from the email address on your Salvio account</strong> — this is how we verify your identity.</li>
+                <li>Use the subject line <strong>“Account deletion request”</strong>.</li>
+              </ol>
+              <p>We complete deletion requests <strong>within 30 days</strong> of receiving them.</p>
+            </div>
+
+            <h2>What is deleted</h2>
+            <p>The following is deleted <strong>permanently and immediately</strong> when your account is deleted:</p>
+            <ul>
+              <li>Account details: name, email address, phone number, date of birth, sex and password.</li>
+              <li>Profile photo, and all uploaded gallery and credential images.</li>
+              <li>Trainer profile, including bio, rates, locations, gym links and specialisations.</li>
+              <li>Schedule, working hours, blocked dates and session packages.</li>
+              <li>Training preferences: goals, fitness level and budget.</li>
+              <li>Reviews you have written.</li>
+              <li>Issue reports you have filed.</li>
+              <li>Saved sessions and push notification tokens.</li>
+              <li>Subscription transaction records held by Salvio.</li>
+              <li>Profile-view analytics records.</li>
+            </ul>
+
+            <h2>What is kept</h2>
+            <ul>
+              <li>
+                <strong>Booking slots in a trainer’s calendar.</strong> Slots that belong to a
+                trainer remain in that trainer’s calendar, but they are unlinked from your
+                deleted account and no longer identify you.
+              </li>
+              <li>
+                <strong>Records we are legally required to keep.</strong> Records required for
+                accounting, tax, fraud prevention and dispute resolution are retained for the
+                statutory period required by Romanian law, and are deleted afterwards.
+              </li>
+              <li>
+                <strong>Backups.</strong> Copies of your data in our backups are purged on the
+                normal backup rotation, within 30 days.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <h3>Your subscription is not cancelled by deleting your account</h3>
+              <p>
+                Subscriptions are billed by <strong>Apple or Google</strong>, not by Salvio.
+                Deleting your Salvio account does <strong>not</strong> cancel an active
+                subscription — you must cancel it yourself in your store subscription settings:
+              </p>
+              <ul>
+                <li><a class="breakable" href="https://apps.apple.com/account/subscriptions">apps.apple.com/account/subscriptions</a> (App Store)</li>
+                <li><a class="breakable" href="https://play.google.com/store/account/subscriptions">play.google.com/store/account/subscriptions</a> (Google Play)</li>
+              </ul>
+            </div>
+
+            <div class="final-box">
+              <p>Deleting your account is permanent and cannot be undone. Your data cannot be recovered or restored afterwards, and we cannot reinstate a deleted account. If you want to use Salvio again, you will need to create a new account.</p>
+            </div>
+
+            <h2>Questions</h2>
+            <p>
+              If you have any questions about deleting your account or your data, contact us at
+              <a class="breakable" href="mailto:robertojudele@juroc.tech">robertojudele@juroc.tech</a>.
+            </p>
+            <p>
+              See also our <a href="privacy-policy.html">Privacy Policy</a> and
+              <a href="terms.html">Terms of Use</a>.
+            </p>
+
+            <p class="page-updated">
+              Last updated: 6 August 2026 · Juroc Tech Solutions SRL, Romania — developer of Salvio.
+            </p>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <hr class="lang-divider" aria-hidden="true">
+
+    <!-- ============================ ROMÂNĂ ============================= -->
+    <section class="lang" lang="ro" id="ro">
+
+      <div class="inner-hero">
+        <div class="container">
+          <div class="langbar" role="group" aria-label="Limbă">
+            <button type="button" class="langbtn" data-set-lang="en" aria-pressed="false">English</button>
+            <button type="button" class="langbtn" data-set-lang="ro" aria-pressed="true">Română</button>
+          </div>
+          <nav class="breadcrumb" aria-label="Navigare">
+            <a href="index.html">Acasă</a> &rsaquo; Ștergerea contului
+          </nav>
+          <h1>Ștergerea contului tău Salvio</h1>
+          <p class="last-updated">Ultima actualizare: 6 august 2026</p>
+        </div>
+      </div>
+
+      <div class="legal-content">
+        <div class="container">
+          <div class="legal-inner">
+
+            <p>
+              <strong>Salvio</strong> este o platformă de antrenori de fitness pentru iOS și
+              Android, dezvoltată și operată de <strong>Juroc Tech Solutions SRL</strong>, România.
+              Această pagină explică cum poți cere ștergerea contului tău Salvio și ce se
+              întâmplă cu datele tale.
+            </p>
+
+            <h2>Cum îți ștergi contul</h2>
+            <p>Există două modalități de a șterge contul Salvio. Nu trebuie să instalezi aplicația și nu trebuie să te autentifici pe această pagină pentru a face o cerere.</p>
+
+            <div class="step-card">
+              <span class="step-label">Varianta 1 — În aplicație</span>
+              <h3>Îți ștergi singur contul (imediat)</h3>
+              <ol>
+                <li>Deschide aplicația Salvio și mergi la <strong>profilul tău</strong>.</li>
+                <li>Apasă pe <strong>meniul (trei puncte)</strong> din colțul din dreapta sus.</li>
+                <li>Alege <strong>Delete Profile</strong> (Șterge profilul).</li>
+                <li><strong>Confirmă</strong> ștergerea.</li>
+              </ol>
+              <p>Contul și datele tale sunt șterse <strong>imediat și definitiv</strong>.</p>
+            </div>
+
+            <div class="step-card">
+              <span class="step-label">Varianta 2 — Prin e-mail</span>
+              <h3>Ne ceri nouă să îți ștergem contul</h3>
+              <ol>
+                <li>Scrie-ne la <a class="breakable" href="mailto:robertojudele@juroc.tech?subject=Account%20deletion%20request">robertojudele@juroc.tech</a>.</li>
+                <li>Trimite e-mailul <strong>de pe adresa de e-mail asociată contului tău Salvio</strong> — așa îți verificăm identitatea.</li>
+                <li>Folosește subiectul <strong>„Account deletion request”</strong>.</li>
+              </ol>
+              <p>Finalizăm cererile de ștergere <strong>în termen de 30 de zile</strong> de la primirea lor.</p>
+            </div>
+
+            <h2>Ce se șterge</h2>
+            <p>Următoarele date sunt șterse <strong>definitiv și imediat</strong> la ștergerea contului:</p>
+            <ul>
+              <li>Datele contului: nume, adresă de e-mail, număr de telefon, data nașterii, sex și parolă.</li>
+              <li>Fotografia de profil și toate imaginile încărcate în galerie și cele cu certificări.</li>
+              <li>Profilul de antrenor, inclusiv descrierea, tarifele, locațiile, linkurile către săli și specializările.</li>
+              <li>Programul, orele de lucru, zilele blocate și pachetele de ședințe.</li>
+              <li>Preferințele de antrenament: obiective, nivel de fitness și buget.</li>
+              <li>Recenziile scrise de tine.</li>
+              <li>Sesizările trimise de tine.</li>
+              <li>Ședințele salvate și token-urile pentru notificări push.</li>
+              <li>Înregistrările tranzacțiilor de abonament păstrate de Salvio.</li>
+              <li>Înregistrările de analiză privind vizualizările profilului.</li>
+            </ul>
+
+            <h2>Ce se păstrează</h2>
+            <ul>
+              <li>
+                <strong>Rezervările din calendarul unui antrenor.</strong> Intervalele care
+                aparțin unui antrenor rămân în calendarul acelui antrenor, dar sunt deconectate
+                de contul tău șters și nu te mai identifică.
+              </li>
+              <li>
+                <strong>Înregistrările pe care legea ne obligă să le păstrăm.</strong>
+                Înregistrările necesare pentru contabilitate, taxe, prevenirea fraudei și
+                soluționarea litigiilor sunt păstrate pe perioada legală prevăzută de
+                legislația din România, iar apoi sunt șterse.
+              </li>
+              <li>
+                <strong>Copiile de siguranță (backup).</strong> Copiile datelor tale din
+                backup-uri sunt eliminate la rotația normală a backup-urilor, în termen de 30 de zile.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <h3>Ștergerea contului NU îți anulează abonamentul</h3>
+              <p>
+                Abonamentele sunt facturate de <strong>Apple sau Google</strong>, nu de Salvio.
+                Ștergerea contului Salvio <strong>nu</strong> anulează un abonament activ — trebuie
+                să îl anulezi tu din setările de abonamente ale magazinului:
+              </p>
+              <ul>
+                <li><a class="breakable" href="https://apps.apple.com/account/subscriptions">apps.apple.com/account/subscriptions</a> (App Store)</li>
+                <li><a class="breakable" href="https://play.google.com/store/account/subscriptions">play.google.com/store/account/subscriptions</a> (Google Play)</li>
+              </ul>
+            </div>
+
+            <div class="final-box">
+              <p>Ștergerea contului este definitivă și nu poate fi anulată. Datele tale nu pot fi recuperate sau restaurate ulterior, iar noi nu putem reactiva un cont șters. Dacă vrei să folosești Salvio din nou, va trebui să îți creezi un cont nou.</p>
+            </div>
+
+            <h2>Întrebări</h2>
+            <p>
+              Dacă ai întrebări despre ștergerea contului sau despre datele tale, scrie-ne la
+              <a class="breakable" href="mailto:robertojudele@juroc.tech">robertojudele@juroc.tech</a>.
+            </p>
+            <p>
+              Vezi și <a href="privacy-policy.html">Politica de confidențialitate</a> și
+              <a href="terms.html">Termenii și condițiile</a>.
+            </p>
+
+            <p class="page-updated">
+              Ultima actualizare: 6 august 2026 · Juroc Tech Solutions SRL, România — dezvoltatorul aplicației Salvio.
+            </p>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">
+            <div class="logo-icon" aria-hidden="true">J</div>
+            <div class="logo-text">
+              <span class="logo-name">Juroc Solutions</span>
+              <span class="logo-sub">SRL</span>
+            </div>
+          </a>
+          <p>Romanian platform connecting athletes with professional sports coaches — from fitness to football and beyond.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="index.html#features">Find a Coach</a></li>
+            <li><a href="index.html#features">Join as Coach</a></li>
+            <li><a href="index.html#sports">Sport Categories</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+            <li><a href="legal.html">Legal Information</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="legal.html">Legal Mentions</a></li>
+            <li><a href="cookies.html">Cookie Policy</a></li>
+            <li><a href="delete-account">Delete Account</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span class="current-year">2026</span> Juroc Tech Solutions SRL. All rights reserved.</p>
+        <div class="footer-legal-links">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="legal.html">Legal</a>
+          <a href="cookies.html">Cookies</a>
+        </div>
+      </div>
+      <div class="footer-legal-info">
+        Juroc Tech Solutions SRL · CAEN 6201 · România
+      </div>
+    </div>
+  </footer>
+
+  <!--
+    The cookie banner from the other pages is deliberately absent: this page sets
+    no cookies and reads no localStorage, so there is nothing to consent to.
+  -->
+  <script>
+    (function () {
+      /* --- Header scroll effect (from js/main.js) --- */
+      var header = document.querySelector('.site-header');
+      if (header) {
+        window.addEventListener('scroll', function () {
+          header.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+      }
+
+      /* --- Mobile navigation (from js/main.js) --- */
+      var hamburger = document.querySelector('.hamburger');
+      var navMenu = document.querySelector('.nav-menu');
+      if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function () {
+          hamburger.classList.toggle('open');
+          navMenu.classList.toggle('open');
+          hamburger.setAttribute('aria-expanded', hamburger.classList.contains('open'));
+        });
+        navMenu.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            hamburger.classList.remove('open');
+            navMenu.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      /* --- Year in footer (from js/main.js) --- */
+      document.querySelectorAll('.current-year').forEach(function (el) {
+        el.textContent = new Date().getFullYear();
+      });
+
+      /* --- Language toggle --- */
+      var root = document.documentElement;
+      var buttons = document.querySelectorAll('[data-set-lang]');
+
+      function apply(lang) {
+        root.setAttribute('data-lang', lang);
+        // The <html lang> attribute must follow the visible content for screen readers.
+        root.setAttribute('lang', lang);
+        buttons.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', String(btn.dataset.setLang === lang));
+        });
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var lang = btn.dataset.setLang;
+          apply(lang);
+          // Keeps /delete-account#ro shareable, without a history entry per click.
+          history.replaceState(null, '', lang === 'ro' ? '#ro' : location.pathname + location.search);
+          window.scrollTo({ top: 0 });
+        });
+      });
+
+      window.addEventListener('hashchange', function () {
+        apply(location.hash === '#ro' ? 'ro' : 'en');
+      });
+
+      apply(location.hash === '#ro' ? 'ro' : 'en');
+    })();
+  </script>
+
+</body>
+</html>

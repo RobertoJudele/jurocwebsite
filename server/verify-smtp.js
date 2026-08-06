@@ -27,10 +27,19 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 465,
   secure: String(process.env.SMTP_SECURE).toLowerCase() !== 'false',
+  /* Require the STARTTLS upgrade on port 587 rather than leaving it
+     opportunistic, so credentials can never go out in cleartext. */
+  requireTLS: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  /* Fail in seconds, not nodemailer's default two minutes. A hang here almost
+     always means the host cannot reach the relay at all, and waiting two
+     minutes to learn that is not useful. */
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 20000
 });
 
 (async () => {
@@ -63,9 +72,17 @@ const transporter = nodemailer.createTransport({
       console.error('Authentication was rejected. If this mailbox has 2FA, you need an');
       console.error('app-specific password rather than the normal account password.');
     }
-    if (err.code === 'ESOCKET' || err.code === 'ETIMEDOUT') {
-      console.error('Could not reach the server. Check SMTP_HOST/SMTP_PORT, and whether the');
-      console.error('VPS firewall or provider blocks outbound SMTP on that port.');
+    if (err.code === 'ESOCKET' || err.code === 'ETIMEDOUT' || err.code === 'ECONNECTION') {
+      console.error('Could not reach the relay. Check SMTP_HOST/SMTP_PORT first, then whether');
+      console.error('outbound SMTP is blocked. Hetzner, DigitalOcean, Oracle Cloud and others');
+      console.error('block ports 25/465/587 by default and only lift it on request.');
+      console.error('');
+      console.error('Confirm with:');
+      console.error("  timeout 8 bash -c 'cat < /dev/null > /dev/tcp/smtp.gmail.com/465' \\");
+      console.error('    && echo OPEN || echo BLOCKED');
+      console.error('');
+      console.error('If it is blocked, either ask the provider to unblock it, or switch to a');
+      console.error('transactional email API over HTTPS on port 443, which is never blocked.');
     }
     process.exit(1);
   }

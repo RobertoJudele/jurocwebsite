@@ -1,0 +1,118 @@
+# =========================================
+# Trainee stack + Juroc marketing site — MERGED
+# =========================================
+# Drop-in replacement for ~/Trainee/server/docker-compose.yml.
+#
+# Everything from the original trainee stack is unchanged. Three things were
+# added, each marked "ADDED FOR JUROC SITE":
+#   1. the juroc-site-api service
+#   2. a static-site bind mount on nginx
+#   3. juroc-site-api in nginx's depends_on
+#
+# The services must live in THIS file rather than a separate compose project:
+# the stack declares no explicit networks, so its services share one implicit
+# default network and resolve each other by service name. A separate project
+# would sit on a different network and trainee_nginx could not resolve
+# juroc-site-api.
+#
+# NOTE: this file mirrors the trainee stack as it stood on 2026-07-28. The
+# authoritative copy is ~/Trainee/server/docker-compose.yml — if that has since
+# changed, merge the marked additions into it by hand rather than overwriting.
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: trainee_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-change_me}
+      POSTGRES_DB: ${DB_NAME:-trainee}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-trainee}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # NOTE: no published ports — Postgres stays private on the internal network.
+
+  app:
+    build: .
+    container_name: trainee_api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      # Talk to the db container by its service name, not localhost.
+      DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    # NOTE: not published to the host — nginx is the only public entrypoint.
+    expose:
+      - "8000"
+
+  # ---- ADDED FOR JUROC SITE ----
+  # Contact form mail service for juroc.tech. Absolute paths on purpose: the
+  # marketing site is a separate repo and does not belong inside the Trainee
+  # tree just to satisfy a relative path.
+  juroc-site-api:
+    build: /home/robi/jurocwebsite/server
+    container_name: juroc_site_api
+    restart: unless-stopped
+    env_file: /home/robi/jurocwebsite/server/.env
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      # Must be 0.0.0.0 in a container, or it binds the container's own
+      # loopback and nginx cannot reach it across the network.
+      BIND_HOST: 0.0.0.0
+    # NOTE: not published to the host — nginx is the only public entrypoint,
+    # exactly as with app above.
+    expose:
+      - "3001"
+    healthcheck:
+      # node:20-slim has no curl or wget; Node 20 has global fetch built in.
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  nginx:
+    image: nginx:1.27
+    container_name: trainee_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - certbot_www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      # ---- ADDED FOR JUROC SITE ---- static files for juroc.tech
+      - /home/robi/jurocwebsite:/var/www/juroc.tech:ro
+    depends_on:
+      - app
+      # ---- ADDED FOR JUROC SITE ----
+      # Start order only, not readiness. nginx coming up first is fine: the
+      # juroc.tech config resolves its upstream at request time, so a missing
+      # container is a 502 rather than an nginx that refuses to start.
+      - juroc-site-api
+    # Reload every 6h so renewed certs get picked up without a restart.
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    image: certbot/certbot
+    container_name: trainee_certbot
+    volumes:
+      - certbot_www:/var/www/certbot:rw
+      - certbot_conf:/etc/letsencrypt:rw
+    # Attempt renewal every 12h; the bootstrap is done by init-letsencrypt.sh.
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  postgres_data:
+  certbot_www:
+  certbot_conf:

@@ -24,15 +24,27 @@ The trainee API owns `api.juroc.tech`; this site takes `juroc.tech` and
 Note that `api.juroc.tech` already resolves to this VPS, but the apex
 `juroc.tech` likely still points at GitHub Pages — see step 7.
 
-## 2. Check the VPS can send mail at all
+## 2. Check which SMTP port the VPS can actually reach
 
 ```sh
-nc -zv smtp.your-provider.com 465
+for p in 465 587; do
+  timeout 8 bash -c "cat < /dev/null > /dev/tcp/smtp.gmail.com/$p" \
+    && echo "$p OPEN" || echo "$p BLOCKED"
+done
 ```
 
-Many VPS providers block outbound SMTP by default, sometimes including 465 and
-587. If this hangs, open a support ticket — no amount of config will fix it, and
-it is better to find out now than after everything else is wired up.
+**Result on this VPS (Hetzner nbg1, verified 2026-07-28): 465 BLOCKED, 587
+OPEN.** Hence `SMTP_PORT=587` / `SMTP_SECURE=false` (STARTTLS) rather than 465
+implicit TLS. Both are encrypted; the service sets `requireTLS` so a missing
+STARTTLS upgrade fails rather than sending credentials in cleartext.
+
+Do this before anything else. A blocked port and a bad password look identical
+from the application — both just hang — and chasing the wrong one wastes real
+time. If both ports are blocked, that is a provider support ticket; no config
+will fix it.
+
+Note: do not test `smtp.gmail.com:443` as a control. It does not listen on 443,
+so a failure there means nothing.
 
 ## 3. Clone the site
 
@@ -44,8 +56,8 @@ own home rather than nesting it in the Trainee tree:
 git clone https://github.com/<your-org>/jurocwebsite.git /home/robi/jurocwebsite
 ```
 
-`docker-compose.juroc-site.yml` uses that absolute path throughout. If you put
-it elsewhere, update the three paths in that file.
+`docker-compose.merged.yml` uses that absolute path throughout. If you put it
+elsewhere, update the three paths in that file.
 
 ## 4. Configure SMTP credentials
 
@@ -55,13 +67,53 @@ nano /home/robi/jurocwebsite/server/.env
 chmod 600 /home/robi/jurocwebsite/server/.env
 ```
 
-Confirmed working values: `smtp.gmail.com`, port `465`, `SMTP_SECURE=true`,
-user `robertojudele@juroc.tech`, with the Google app password. The mailbox is on
-Google Workspace, so SPF and DKIM are already aligned for the domain.
+Confirmed working values: `smtp.gmail.com`, port `587`, `SMTP_SECURE=false`
+(STARTTLS — 465 is blocked outbound on this VPS, see step 2), user
+`robertojudele@juroc.tech`, with the Google app password.
 
 Fill in `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` for
 whoever hosts `robertojudele@juroc.tech`. `.env.example` lists the correct host
 and port for Google Workspace, Zoho, Migadu and Microsoft 365.
+
+## 4b. Fix SPF and DKIM before real visitors use the form
+
+Sending works without this; **deliverability to strangers does not.**
+
+Checked 2026-07-28, juroc.tech had:
+
+```
+MX:   SMTP.GOOGLE.COM                              (mail is on Google Workspace)
+SPF:  v=spf1 include:_spf.mail.hostinger.com ~all  (authorises Hostinger only)
+DKIM: google._domainkey                            NOT FOUND
+```
+
+Mail is sent through Google but SPF authorises Hostinger, and there is no
+Google DKIM record — leftovers from before the Google Workspace migration.
+
+This is invisible in testing. Messages to `@juroc.tech` and `@gmail.com`
+addresses are Google-to-Google and skip the checks an external provider
+applies. But the auto-reply goes to whoever fills in the form: a visitor on
+Outlook or Yahoo receives a message that softfails SPF with no aligned DKIM,
+which is a strong spam signal on the one email meant to reassure them.
+
+Fix in the Hostinger DNS zone:
+
+1. Edit the SPF TXT record on `@` to include Google:
+   `v=spf1 include:_spf.google.com include:_spf.mail.hostinger.com ~all`
+   (drop the Hostinger include if nothing sends through them any more)
+2. Google Admin → Apps → Google Workspace → Gmail → Authenticate email →
+   generate the key, add the `google._domainkey` TXT record, then click
+   Start authentication.
+
+Verify afterwards:
+
+```sh
+dig +short TXT juroc.tech | grep spf
+dig +short TXT google._domainkey.juroc.tech
+```
+
+Then send a test to an address outside Google — Outlook or Yahoo — and check
+it reaches the inbox. A `@gmail.com` test cannot detect this problem.
 
 If the mailbox has 2FA, `SMTP_PASS` must be an **app-specific password**. The
 normal account password is rejected with `EAUTH`.
@@ -70,9 +122,27 @@ This is a different `.env` from the trainee stack's — keep them separate.
 
 ## 5. Merge the services and verify SMTP
 
-Paste the `juroc-site-api` service from `docker-compose.juroc-site.yml` into the
-main `docker-compose.yml`, and add the two marked lines to the existing `nginx`
-service (the `/var/www/juroc.tech` mount and the `depends_on` entry).
+`docker-compose.merged.yml` is the trainee stack with the site's services
+already merged in, so it can be dropped straight in:
+
+```sh
+cd ~/Trainee/server
+cp docker-compose.yml docker-compose.yml.bak      # keep a way back
+cp /home/robi/jurocwebsite/deploy/docker-compose.merged.yml docker-compose.yml
+docker compose config --quiet && echo "parses OK"
+```
+
+**Diff it against your backup before going further.** The merged file mirrors
+the trainee stack as it stood on 2026-07-28; if that has changed since, apply
+the three additions by hand instead of overwriting:
+
+```sh
+diff docker-compose.yml.bak docker-compose.yml
+```
+
+The only differences should be the `juroc-site-api` service, the
+`/var/www/juroc.tech` mount on nginx, and `juroc-site-api` in nginx's
+`depends_on` — each marked `ADDED FOR JUROC SITE`.
 
 Then test the relay in isolation, before any of it is public:
 
@@ -175,14 +245,13 @@ nginx container already reloads every 6h to collect renewals. No change needed.
 ## 8. Swap the bootstrap for the real config (enables HTTPS)
 
 Now that the certificate exists, replace the temporary HTTP-only config with
-the real one and uncomment its 443 block:
+the real one. It ships with the 443 block enabled, so it only needs copying —
+but read the header note first if the certificate is not in place yet.
 
 ```sh
 cd ~/Trainee/server
 rm ./nginx/conf.d/juroc.tech.bootstrap.conf
 cp /home/robi/jurocwebsite/deploy/nginx/juroc.tech.conf ./nginx/conf.d/
-# uncomment the 443 block in that file
-nano ./nginx/conf.d/juroc.tech.conf
 
 docker compose exec nginx nginx -t
 docker compose exec nginx nginx -s reload
